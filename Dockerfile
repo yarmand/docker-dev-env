@@ -26,7 +26,9 @@ RUN apk add --update --virtual build-deps python python-dev ctags build-base    
     sh /util/ocd-clean /
 
 RUN apk --update --upgrade add tmux zsh openssh
-    #&& /usr/sbin/rc-update add sshd
+
+RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+RUN sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && sed -i "s/#AuthorizedKeysFile/AuthorizedKeysFile/g" /etc/ssh/sshd_config
 
 #set zsh as default shell
 ENV SHELL=/bin/zsh
@@ -40,4 +42,4 @@ RUN rm -rf /var/cache/apk/* \
     && find / -type f -iname \*.apk-new -delete \
     && rm -rf /var/cache/apk/*
 
-ENTRYPOINT ["/etc/init.d/sshd", "start"]
+CMD ["/usr/sbin/sshd","-D"]
