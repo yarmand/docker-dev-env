@@ -25,21 +25,26 @@ RUN apk add --update --virtual build-deps python python-dev ctags build-base    
     cd /usr/share/vim/vim74/                                                 && \
     sh /util/ocd-clean /
 
-RUN apk --update --upgrade add tmux zsh openssh
+RUN apk update && apk upgrade && \
+    apk add --no-cache \
+        git tig tmux zsh openssh
+RUN apk --no-cache add \
+	--repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
+	emacs
 
 RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
 RUN sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && sed -i "s/#AuthorizedKeysFile/AuthorizedKeysFile/g" /etc/ssh/sshd_config
 
-#set zsh as default shell
-ENV SHELL=/bin/zsh
-
-RUN mkdir -p /src
-
-WORKDIR /src
+WORKDIR /home/developer
 
 # cleanup and settings
 RUN rm -rf /var/cache/apk/* \
     && find / -type f -iname \*.apk-new -delete \
     && rm -rf /var/cache/apk/*
+
+COPY init.sh /home
+
+ENV SHELL=/bin/zsh
+ENV HOME=/home/developer
 
 CMD ["/usr/sbin/sshd","-D"]
