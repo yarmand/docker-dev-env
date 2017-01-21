@@ -1,0 +1,25 @@
+version: "3"
+volumes:
+  home:
+  opt:
+services:
+  devenv:
+    build:
+      context: .
+    volumes:
+      - home:/home/developer
+      - opt:/opt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /c/Users/yarmand:/home/windows
+      - /usr/bin/docker:/usr/bin/docker
+    expose:
+      - "137/udp"
+      - "138/udp"
+      - "139"
+      - "445"
+    ports:
+      - "9022:22"
+    environment:
+      - DOCKER_HOST=unix:///docker/run/docker.sock
+
+    privileged: true
