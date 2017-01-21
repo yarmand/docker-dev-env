@@ -15,7 +15,7 @@ It use named volumes to get persistence between the runs.
     - connect via `ssh -p 9022 developer@localhost`
 - home directory `/home/developer`
   - is is persistent
-  - ---you can access it via samba---
+  - ~~you can access it via samba~~
 - exchange with host `/home/windows`
   - you need to update the absolute path into docker-compose.yml
 - `/opt` directory is persistent
@@ -31,4 +31,6 @@ add some software to the Dockerfile and restart via
 ```
 docker-compose up --build
 ```
-
+# TODO
+- find a way to run a second container for sharing `/home/developer` and `/opt` with the host.
+  I have tried some samba, but you cannot export the ports on windows as you get in conflicts with the the host own samba.
