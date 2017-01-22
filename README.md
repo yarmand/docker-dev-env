@@ -32,6 +32,4 @@ docker-compose run --rm devenv /usr/bin/zsh
 # on windows
 winpty docker-compose run --rm devenv //usr/bin/zsh
 ```
-# TODO
-- find a way to run a second container for sharing `/home/developer` and `/opt` with the host.
-  I have tried some samba, but you cannot export the ports on windows as you get in conflicts with the the host own samba.
+
