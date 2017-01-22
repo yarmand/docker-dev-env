@@ -16,6 +16,11 @@ RUN apt install -y \
         exuberant-ctags \
         vim
 
+RUN apt install -y \
+        libyaml-0-2 \
+        zlib1g \
+        zlib1g-dev
+
 RUN chsh -s /usr/bin/zsh
 
 RUN apt install curl
