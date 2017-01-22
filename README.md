@@ -6,30 +6,31 @@ system Windows / osx / linux.
 It use named volumes to get persistence between the runs.
 
 ## goodies
-- integrated docker client that talk directly to the host demon so you
-    can run docker command inside the container
-- by default it run a ssh demon you can easily connect to
-    - username: developer
-    - you need to provide a file names `id_rsa.pub` to be used as
-        authorised key for user developer
-    - connect via `ssh -p 9022 developer@localhost`
-- home directory `/home/developer`
-  - is is persistent
-  - ~~you can access it via samba~~
-- exchange with host `/home/windows`
-  - you need to update the absolute path into docker-compose.yml
-- `/opt` directory is persistent
-
+- integrated docker-compose client that talk directly to the host demon.
+- by default it start a container with ssH daemon
+     - `ssh -p 9022 root@localhost`
+- Source code
+  - `/src` is a persistent volume
+  - `/srd/host` mounted from the host
+- `/opt` is a persistent volume
+- `/root` this is you home directory, it is persistent
 
 # run it
 ```
-docker-compose up
+docker-compose up --build
+```
+## connect permanent container
+```
+ssh -p 9022 root@localhost
 ```
 
-# change it
-add some software to the Dockerfile and restart via
+## one off shell
 ```
-docker-compose up --build
+# on OSX/linux
+docker-compose run --rm devenv /usr/bin/zsh
+
+# on windows
+winpty docker-compose run --rm devenv //usr/bin/zsh
 ```
 # TODO
 - find a way to run a second container for sharing `/home/developer` and `/opt` with the host.

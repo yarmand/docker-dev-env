@@ -13,15 +13,18 @@ RUN apt install -y \
         tig \
         zsh \
         tmux \
+        exuberant-ctags \
         vim
 
-RUN echo 'developer ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN chsh -s /usr/bin/zsh
 
-RUN adduser --shell /usr/bin/zsh \
-            --disabled-password \
-            --home /home/developer \
-            developer
-COPY id_rsa.pub /home/id_rsa.pub
+RUN apt install curl
+RUN curl -L -o /usr/bin/docker-compose \
+        https://github.com/docker/compose/releases/download/1.10.0/docker-compose-Linux-x86_64 && \
+        chmod +x /usr/bin/docker-compose
+
+COPY id_rsa.pub /home/id_rsa.pub_
+COPY aliases /home/.aliases
 
 COPY start.sh /home/start.sh
 RUN chmod +x /home/start.sh

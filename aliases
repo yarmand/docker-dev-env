@@ -1,0 +1,19 @@
+#######################
+# host docker helpers #
+#######################
+
+function compose()
+{
+  service=$1
+  shift
+  here=$(pwd)
+  cd /docker-dev-env
+  set -x
+  sudo docker-compose run --rm -w $here $service $*
+  cd -
+}
+
+alias bundle='compose ruby bundle'
+alias ruby='compose ruby ruby'
+
+
