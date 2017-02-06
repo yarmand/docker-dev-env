@@ -11,7 +11,7 @@ It use named volumes to get persistence between the runs.
      - `ssh -p 9022 root@localhost`
 - Source code
   - `/src` is a persistent volume
-  - `/srd/host` mounted from the host
+  - `/src/host` mounted from the host
 - `/opt` is a persistent volume
 - `/root` this is you home directory, it is persistent
 
@@ -32,4 +32,7 @@ docker-compose run --rm devenv /usr/bin/zsh
 # on windows
 winpty docker-compose run --rm devenv //usr/bin/zsh
 ```
-
+# TODO
+- example on how to export persisten volumes as .tar.gz
+- helper function to translate path into the dev container compatible
+    with mobilux mounted to run docker command easily.

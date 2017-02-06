@@ -18,13 +18,4 @@ services:
     ports:
       - "9022:22"
 
-  #ruby:
-    #image: 'ruby:2.3'
-    #environment:
-      #- BUNDLE_PATH=/root/.bundle
-    #volumes:
-      #- home:/root
-      #- src:/src
-      #- /c/Users/yarmand/code:/src/host
-      #- opt:/opt
 
