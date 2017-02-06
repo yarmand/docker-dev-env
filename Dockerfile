@@ -2,14 +2,14 @@ FROM ubuntu:16.04
 
 MAINTAINER Yann Armand <yann@harakys.com>
 
-RUN apt- update && apt install -y \
+RUN apt-get update && apt install -y \
         build-essential \
         ctags \
         git \
         openssh-server \
         samba \
         sudo
-RUN apt- update && apt install -y \
+RUN apt-get update && apt install -y \
         tig \
         zsh \
         tmux \
@@ -23,7 +23,7 @@ RUN apt- update && apt install -y \
         unzip \
         vim
 
-RUN apt- update && apt install -y \
+RUN apt-get update && apt install -y \
         libyaml-0-2 \
         zlib1g \
         zlib1g-dev \
@@ -42,10 +42,6 @@ COPY aliases /home/.aliases
 
 COPY start.sh /home/start.sh
 RUN chmod +x /home/start.sh
-
-COPY start_smb.sh /home/start_smb.sh
-RUN chmod +x /home/start_smb.sh
-
 
 CMD ["/bin/bash", "-c", "/home/start.sh"]
 
