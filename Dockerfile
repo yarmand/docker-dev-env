@@ -2,15 +2,14 @@ FROM ubuntu:16.04
 
 MAINTAINER Yann Armand <yann@harakys.com>
 
-RUN apt update
-RUN apt install -y \
+RUN apt- update && apt install -y \
         build-essential \
         ctags \
         git \
         openssh-server \
         samba \
         sudo
-RUN apt install -y \
+RUN apt- update && apt install -y \
         tig \
         zsh \
         tmux \
@@ -24,7 +23,7 @@ RUN apt install -y \
         unzip \
         vim
 
-RUN apt install -y \
+RUN apt- update && apt install -y \
         libyaml-0-2 \
         zlib1g \
         zlib1g-dev \
