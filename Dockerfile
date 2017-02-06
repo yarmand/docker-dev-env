@@ -8,18 +8,28 @@ RUN apt install -y \
         ctags \
         git \
         openssh-server \
+        samba \
         sudo
 RUN apt install -y \
         tig \
         zsh \
         tmux \
         exuberant-ctags \
+        silversearcher-ag \
+        iputils-ping \
+        traceroute \
+        dnsutils \
+        net-tools \
+        host \
+        unzip \
         vim
 
 RUN apt install -y \
         libyaml-0-2 \
         zlib1g \
-        zlib1g-dev
+        zlib1g-dev \
+        libcurl3 \
+        libcurl3-dev
 
 RUN chsh -s /usr/bin/zsh
 
@@ -33,6 +43,10 @@ COPY aliases /home/.aliases
 
 COPY start.sh /home/start.sh
 RUN chmod +x /home/start.sh
+
+COPY start_smb.sh /home/start_smb.sh
+RUN chmod +x /home/start_smb.sh
+
 
 CMD ["/bin/bash", "-c", "/home/start.sh"]
 
