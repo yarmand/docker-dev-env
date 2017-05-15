@@ -3,6 +3,7 @@ volumes:
   home:
   src:
   opt:
+
 services:
   devenv:
     build:
@@ -10,9 +11,9 @@ services:
     volumes:
       - home:/root
       - src:/src
-      - /c/Users/yarmand/src:/src/host
+        #      - /c/Users/yarmand/src:/src/host
       - opt:/opt
-      - .:/docker-dev-env
+        #      - .:/docker-dev-env
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
     ports:

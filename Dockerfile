@@ -21,7 +21,12 @@ RUN apt-get update && apt install -y \
         net-tools \
         host \
         unzip \
-        vim
+        vim \
+        jq \
+        nodejs \
+        npm \
+        sshuttle \
+        man
 
 RUN apt-get update && apt install -y \
         libyaml-0-2 \
@@ -30,12 +35,17 @@ RUN apt-get update && apt install -y \
         libcurl3 \
         libcurl3-dev
 
+RUN apt-get update && apt install -y \
+       golang
+
 RUN chsh -s /usr/bin/zsh
 
 RUN apt install curl
 RUN curl -L -o /usr/bin/docker-compose \
         https://github.com/docker/compose/releases/download/1.10.0/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
+
+RUN npm install -g azure-cli
 
 COPY id_rsa.pub /home/id_rsa.pub_
 COPY aliases /home/.aliases
