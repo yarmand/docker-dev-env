@@ -9,6 +9,9 @@ chmod 644 /root/.ssh/authorized_keys
 
 /etc/init.d/ssh start
 
+# put back in place azure-cli
+rm -rf /opt/az && mv /usr/local/az /opt
+
 while true ; do
   sleep 10000
 done

@@ -24,8 +24,6 @@ RUN apt-get update && apt install -y \
         unzip \
         vim \
         jq \
-        nodejs \
-        npm \
         sshuttle \
         man
 
@@ -75,8 +73,20 @@ RUN wget ftp://ftp.freetds.org/pub/freetds/stable/freetds-1.00.27.tar.gz && \
     make &&\
     make install
 
+# node 8
+RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - &&\
+    sudo apt-get update && \
+    sudo apt-get install -y nodejs
 
-RUN npm install -g azure-cli
+# azure-cli
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \
+    tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-key adv --keyserver packages.microsoft.com --recv-keys 417A0893 && \
+    apt-get install apt-transport-https && \
+    apt-get update && sudo apt-get install azure-cli && \
+    mv /opt/az /usr/local/az
+    # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
+
 
 COPY id_rsa.pub /home/id_rsa.pub
 COPY aliases /home/.aliases
