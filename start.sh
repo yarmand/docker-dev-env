@@ -1,5 +1,7 @@
 #!/bin/bash
 
+hostname dev
+
 mkdir -p /root/.ssh
 chmod 0700 /root/.ssh
 if [ ! -f /root/.ssh/authorized_keys ] ; then

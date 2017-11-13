@@ -87,6 +87,10 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheez
     mv /opt/az /usr/local/az
     # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
 
+# local timezone
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
+ENV TZ=America/Los_Angeles
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY id_rsa.pub /home/id_rsa.pub
 COPY aliases /home/.aliases
