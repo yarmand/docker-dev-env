@@ -8,8 +8,7 @@ RUN apt-get update && apt install -y \
         git
 RUN apt-get update && apt install -y \
         openssh-server \
-        samba \
-        sudo
+        openvpn
 RUN apt-get update && apt install -y \
         tig \
         zsh \
@@ -41,21 +40,18 @@ RUN apt-get update && apt install -y \
         zlib1g \
         zlib1g-dev \
         libcurl3 \
-        libcurl3-dev
+        libcurl3-dev \
+        curl
 
 RUN chsh -s /usr/bin/zsh
 
-RUN apt install curl
 RUN curl -L -o /usr/bin/docker-compose \
         https://github.com/docker/compose/releases/download/1.10.0/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
 
-RUN cd && curl -L -O https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz &&\
-    rm  -f go1.8.3.linux-amd64.tar.gz
-
 ENV PATH=${PATH}:/usr/local/go/bin
 
+# ruby
 RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz && \
     tar -xzvf chruby-0.3.9.tar.gz && \
     cd chruby-0.3.9/ &&\
@@ -86,6 +82,11 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheez
     apt-get update && sudo apt-get install azure-cli && \
     mv /opt/az /usr/local/az
     # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
+# golang
+RUN cd && curl -L -O https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz &&\
+    rm  -f go1.9.2.linux-amd64.tar.gz
+
 
 # local timezone
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
