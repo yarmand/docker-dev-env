@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Yann Armand <yann@harakys.com>
 
@@ -39,8 +39,8 @@ RUN apt-get update && apt install -y \
         libyaml-0-2 \
         zlib1g \
         zlib1g-dev \
-        libcurl3 \
-        libcurl3-dev \
+        libcurl4 \
+        libcurl4-openssl-dev \
         curl
 
 RUN chsh -s /usr/bin/zsh
@@ -61,31 +61,35 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
     cd ruby-install-0.6.1/ &&\
     sudo make install &&\
     cd && rm -rf chruby-0.3.9
-
-RUN wget ftp://ftp.freetds.org/pub/freetds/stable/freetds-1.00.27.tar.gz && \
-    tar -xzf freetds-1.00.27.tar.gz && \
-    cd freetds-1.00.27 &&\
-    ./configure --prefix=/usr/local --with-tdsver=7.3 &&\
-    make &&\
-    make install
+    # rubies will install in /opt which is a persistent volume
 
 # node 8
 RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - &&\
     sudo apt-get update && \
     sudo apt-get install -y nodejs
 
+# golang
+RUN cd && \
+    set -eux; \
+    GO_VERION=1.11.4 ; \
+    REL_SHA=fb26c30e6a04ad937bbc657a1b5bba92f80096af1e8ee6da6430c045a8db3a5b ; \
+    PACKAGE=go${GO_VERION}.linux-amd64.tar.gz ; \
+    curl -L -O https://dl.google.com/go/${PACKAGE} ; \
+    echo "${REL_SHA} ${PACKAGE}" | sha256sum -c - ; \
+    tar -C /usr/local -xzf ${PACKAGE} ; \
+    rm  -f ${PACKAGE}
+
 # azure-cli
-RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \
+RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
+    (AZ_REPO=$(lsb_release -cs) ; echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main") | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-key adv --keyserver packages.microsoft.com --recv-keys 417A0893 && \
-    apt-get install apt-transport-https && \
-    apt-get update && sudo apt-get install azure-cli && \
+    apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
+     --keyserver packages.microsoft.com \
+     --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
+    apt-get update && \
+    apt-get install azure-cli && \
     mv /opt/az /usr/local/az
     # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
-# golang
-RUN cd && curl -L -O https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz &&\
-    rm  -f go1.9.2.linux-amd64.tar.gz
 
 
 # local timezone
