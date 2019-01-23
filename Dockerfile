@@ -46,7 +46,7 @@ RUN apt-get update && apt install -y \
 RUN chsh -s /usr/bin/zsh
 
 RUN curl -L -o /usr/bin/docker-compose \
-        https://github.com/docker/compose/releases/download/1.10.0/docker-compose-Linux-x86_64 && \
+        https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
 
 ENV PATH=${PATH}:/usr/local/go/bin
