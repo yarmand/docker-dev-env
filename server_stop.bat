@@ -1,2 +1,2 @@
 docker-compose kill
-docker-compose rm
+docker-compose rm -sf
