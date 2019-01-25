@@ -43,6 +43,14 @@ RUN apt-get update && apt install -y \
         libcurl4-openssl-dev \
         curl
 
+# some X11 things
+ENV TZ=Europe/Minsk
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt install -y \
+      xfce4 \
+      xfce4-goodies \
+      tigervnc-standalone-server
+
 RUN chsh -s /usr/bin/zsh
 
 RUN curl -L -o /usr/bin/docker-compose \
@@ -91,6 +99,13 @@ RUN apt-get install apt-transport-https lsb-release software-properties-common d
     mv /opt/az /usr/local/az
     # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
 
+# visual studio code
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
+    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' && \
+    apt-get update && apt-get install -y code
+# hack from https://github.com/Microsoft/vscode/issues/3451
+RUN sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1
 
 # local timezone
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
