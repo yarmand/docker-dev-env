@@ -44,7 +44,7 @@ RUN apt-get update && apt install -y \
         curl
 
 # some X11 things
-ENV TZ=Europe/Minsk
+ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt install -y \
       xfce4 \
@@ -54,7 +54,7 @@ RUN apt install -y \
 RUN chsh -s /usr/bin/zsh
 
 RUN curl -L -o /usr/bin/docker-compose \
-        https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64 && \
+        https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
 
 ENV PATH=${PATH}:/usr/local/go/bin
@@ -72,20 +72,21 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
     # rubies will install in /opt which is a persistent volume
 
 # node 8
-RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - &&\
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
     sudo apt-get update && \
     sudo apt-get install -y nodejs
 
 # golang
 RUN cd && \
     set -eux; \
-    GO_VERION=1.11.4 ; \
-    REL_SHA=fb26c30e6a04ad937bbc657a1b5bba92f80096af1e8ee6da6430c045a8db3a5b ; \
+    GO_VERION=1.13 ; \
+    REL_SHA=3fc0b8b6101d42efd7da1da3029c0a13f22079c0c37ef9730209d8ec665bf122 ; \
     PACKAGE=go${GO_VERION}.linux-amd64.tar.gz ; \
     curl -L -O https://dl.google.com/go/${PACKAGE} ; \
     echo "${REL_SHA} ${PACKAGE}" | sha256sum -c - ; \
     tar -C /usr/local -xzf ${PACKAGE} ; \
     rm  -f ${PACKAGE}
+ENV GO111MODULE=on
 
 # azure-cli
 RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
@@ -98,14 +99,6 @@ RUN apt-get install apt-transport-https lsb-release software-properties-common d
     apt-get install azure-cli && \
     mv /opt/az /usr/local/az
     # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
-
-# visual studio code
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
-    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
-    sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' && \
-    apt-get update && apt-get install -y code
-# hack from https://github.com/Microsoft/vscode/issues/3451
-RUN sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1
 
 # local timezone
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
