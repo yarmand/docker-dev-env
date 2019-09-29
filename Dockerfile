@@ -5,11 +5,9 @@ MAINTAINER Yann Armand <yann@harakys.com>
 RUN apt-get update && apt install -y \
         build-essential \
         ctags \
-        git
-RUN apt-get update && apt install -y \
+        git \
         openssh-server \
-        openvpn
-RUN apt-get update && apt install -y \
+        openvpn \
         tig \
         zsh \
         tmux \
@@ -27,29 +25,21 @@ RUN apt-get update && apt install -y \
         man
 
 # vim8 and neovim
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
       software-properties-common
 RUN add-apt-repository ppa:jonathonf/vim
 RUN add-apt-repository ppa:neovim-ppa/stable
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
       vim \
       neovim
 
-RUN apt-get update && apt install -y \
+RUN apt install -y \
         libyaml-0-2 \
         zlib1g \
         zlib1g-dev \
         libcurl4 \
         libcurl4-openssl-dev \
         curl
-
-# some X11 things
-ENV TZ=America/Los_Angeles
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt install -y \
-      xfce4 \
-      xfce4-goodies \
-      tigervnc-standalone-server
 
 RUN chsh -s /usr/bin/zsh
 
@@ -71,16 +61,15 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
     cd && rm -rf chruby-0.3.9
     # rubies will install in /opt which is a persistent volume
 
-# node 8
+# node 10
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
-    sudo apt-get update && \
     sudo apt-get install -y nodejs
 
 # golang
 RUN cd && \
     set -eux; \
-    GO_VERION=1.13 ; \
-    REL_SHA=3fc0b8b6101d42efd7da1da3029c0a13f22079c0c37ef9730209d8ec665bf122 ; \
+    GO_VERION=1.13.1 ; \
+    REL_SHA=94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124 \
     PACKAGE=go${GO_VERION}.linux-amd64.tar.gz ; \
     curl -L -O https://dl.google.com/go/${PACKAGE} ; \
     echo "${REL_SHA} ${PACKAGE}" | sha256sum -c - ; \
@@ -106,7 +95,6 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY id_rsa.pub /home/id_rsa.pub
-COPY aliases /home/.aliases
 
 COPY start.sh /home/start.sh
 RUN chmod +x /home/start.sh

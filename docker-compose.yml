@@ -11,9 +11,8 @@ services:
     volumes:
       - home:/root
       - src:/src
-      - /c/src:/src_win
+      - /c:/mnt/c
       - opt:/opt
-        #      - .:/docker-dev-env
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/local/bin/docker:/usr/local/bin/docker
     ports:
