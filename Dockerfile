@@ -96,8 +96,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY id_rsa.pub /home/id_rsa.pub
 
-COPY start.sh /home/start.sh
-RUN chmod +x /home/start.sh
+COPY init.sh /home/init.sh
+RUN chmod +x /home/init.sh
 
-CMD ["/bin/bash", "-c", "/home/start.sh"]
+CMD ["/bin/bash", "-c", "/home/init.sh"]
 
