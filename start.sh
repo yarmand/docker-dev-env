@@ -10,7 +10,7 @@ docker run --rm -it \
         -v docker-dev-env_home:/root \
         -v docker-dev-env_src:/src \
         -v docker-dev-env_opt:/opt \
-        -v /c:/mnt/c \
+        -v /Volumes/Users:/mnt/users \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /usr/local/bin/docker:/usr/local/bin/docker \
         -p 9022:22 \
