@@ -14,4 +14,4 @@ docker run --rm -it ^
         -v /var/run/docker.sock:/var/run/docker.sock ^
         -v /usr/local/bin/docker:/usr/local/bin/docker ^
         -p 9022:22 ^
-        docker-dev-env /bin/bash
+        docker-dev-env 
