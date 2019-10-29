@@ -25,7 +25,7 @@ RUN apt-get update && apt install -y \
         man
 
 # vim8 and neovim
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
       software-properties-common
 RUN add-apt-repository ppa:jonathonf/vim
 RUN add-apt-repository ppa:neovim-ppa/stable
@@ -63,7 +63,7 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
 
 # node 10
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
-    sudo apt-get install -y nodejs
+    sudo apt-get update && apt-get install -y nodejs
 
 # golang
 RUN cd && \
@@ -76,6 +76,10 @@ RUN cd && \
     tar -C /usr/local -xzf ${PACKAGE} ; \
     rm  -f ${PACKAGE}
 ENV GO111MODULE=on
+
+# Java
+## openJDK 8
+RUN apt-get update && sudo apt-get install -y openjdk-8-jdk
 
 # azure-cli
 RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
