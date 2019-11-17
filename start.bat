@@ -1,4 +1,8 @@
 
+REM wai for docker to start
+:repeat
+docker ps || sleep 3 && goto repeat
+
 docker volume create docker-dev-env_home
 docker volume create docker-dev-env_opt
 docker volume create docker-dev-env_src
