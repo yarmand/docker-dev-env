@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 
-MAINTAINER Yann Armand <yann@harakys.com>
-
 RUN apt-get update && apt install -y \
         build-essential \
         ctags \
@@ -46,6 +44,10 @@ RUN chsh -s /usr/bin/zsh
 RUN curl -L -o /usr/bin/docker-compose \
         https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
+
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
+      chmod +x ./kubectl && \
+      mv ./kubectl /usr/local/bin/kubectl
 
 ENV PATH=${PATH}:/usr/local/go/bin
 
