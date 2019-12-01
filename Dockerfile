@@ -82,6 +82,17 @@ ENV GO111MODULE=on
 # Java
 ## openJDK 8
 RUN apt-get update && sudo apt-get install -y openjdk-8-jdk
+## maven
+# Install Maven
+ENV MVN_VERSION=3.5.4
+RUN  cd /usr/local &&\
+      curl -O http://mirrors.ocf.berkeley.edu/apache/maven/maven-3/${MVN_VERSION}/binaries/apache-maven-${MVN_VERSION}-bin.tar.gz && \
+      tar zxf apache-maven-${MVN_VERSION}-bin.tar.gz
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV JDK_18=/usr/lib/jvm/java-8-openjdk-amd64
+ENV maven=/usr/local/apache-maven-${MVN_VERSION}
+ENV M2_HOME=/usr/local/apache-maven-${MVN_VERSION}
+ENV MAVEN_HOME=/usr/local/apache-maven-${MVN_VERSION}
 
 # azure-cli
 RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
