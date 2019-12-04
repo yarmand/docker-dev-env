@@ -31,6 +31,7 @@ RUN apt-get install -y \
       vim \
       neovim
 
+# curl
 RUN apt install -y \
         libyaml-0-2 \
         zlib1g \
@@ -39,19 +40,19 @@ RUN apt install -y \
         libcurl4-openssl-dev \
         curl
 
+#zsh
 RUN chsh -s /usr/bin/zsh
 
+# docker things
 RUN curl -L -o /usr/bin/docker-compose \
         https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
-
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
       chmod +x ./kubectl && \
       mv ./kubectl /usr/local/bin/kubectl
 
-ENV PATH=${PATH}:/usr/local/go/bin
 
-# ruby
+# chruby
 RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz && \
     tar -xzvf chruby-0.3.9.tar.gz && \
     cd chruby-0.3.9/ &&\
@@ -68,6 +69,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
     sudo apt-get update && apt-get install -y nodejs
 
 # golang
+ENV PATH=${PATH}:/usr/local/go/bin
 RUN cd && \
     set -eux; \
     GO_VERION=1.13.1 ; \
@@ -111,6 +113,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# For the ssh connection
+## You need to copy your public key in this folder before starting,
+## you can find it here $HOME/.ssh/id_rsa.pub. th command would be:
+## cp ~/.ssh/id_rsa.pub .
 COPY id_rsa.pub /home/id_rsa.pub
 
 COPY init.sh /home/init.sh
