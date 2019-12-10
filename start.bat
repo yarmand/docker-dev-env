@@ -7,7 +7,6 @@ docker volume create docker-dev-env_home
 docker volume create docker-dev-env_opt
 docker volume create docker-dev-env_src
 
-docker build -t docker-dev-env .
 
 docker run --name samba ^
         --net=host ^
@@ -22,6 +21,8 @@ docker run --name samba ^
           -s "HOME;/home;yes;no" ^
           -s "OPT;/opt;yes;no" ^
           -s "SRC;/src;yes;no"
+
+docker build -t docker-dev-env .
 
 docker run --rm -it ^
         --name docker-dev-env ^
