@@ -4,6 +4,7 @@ RUN apt-get update && apt install -y \
         build-essential \
         ctags \
         git \
+        htop \
         openssh-server \
         openvpn \
         tig \
