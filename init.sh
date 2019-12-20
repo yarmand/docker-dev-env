@@ -9,6 +9,8 @@ if [ ! -f /root/.ssh/authorized_keys ] ; then
 fi
 chmod 644 /root/.ssh/authorized_keys
 
+. /etc/profile
+
 /etc/init.d/ssh start
 
 # put back in place azure-cli

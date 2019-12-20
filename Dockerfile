@@ -43,6 +43,7 @@ RUN apt install -y \
 
 #zsh
 RUN chsh -s /usr/bin/zsh
+RUN echo '. /etc/profile' >>/etc/zsh/zprofile
 
 # docker things
 RUN curl -L -o /usr/bin/docker-compose \
@@ -64,6 +65,7 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
     sudo make install &&\
     cd && rm -rf chruby-0.3.9
     # rubies will install in /opt which is a persistent volume
+COPY profile.d/ruby.sh /etc/profile.d/ruby.sh
 
 # node 10
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
