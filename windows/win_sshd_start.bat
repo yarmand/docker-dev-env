@@ -17,4 +17,4 @@ if exist  %my_host_key% (
 ) else (
   ssh-keygen.exe -t rsa -f %my_host_key% -N ""
 )
-c:\windows\system32\OpenSsh\sshd.exe -h "%cd%\%my_host_key%"
+c:\windows\system32\OpenSsh\sshd.exe -h "%cd%\%my_host_key%" -p 9922

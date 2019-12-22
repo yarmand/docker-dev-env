@@ -22,7 +22,7 @@ docker run --name samba ^
           -s "OPT;/opt;yes;no" ^
           -s "SRC;/src;yes;no"
 
-docker build -t docker-dev-env .
+REM docker build -t docker-dev-env ..
 
 docker run --rm -it ^
         --name docker-dev-env ^
