@@ -1,6 +1,9 @@
 name: Docker Push
 
-on: push
+on: 
+  push:
+    paths:
+    - Dockerfile
 
 jobs:
   docker:
