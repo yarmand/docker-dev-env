@@ -1,0 +1,22 @@
+name: Docker Push
+
+on: push
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build & Push to GitHub Package
+        uses: opspresso/action-docker@master
+        env:
+          USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
+          REGISTRY: "docker.pkg.github.com"
+          # IMAGE_NAME: "user_id/image_name"
+          TAG_NAME: ${{ github.sha }}
+          LATEST: "true"
