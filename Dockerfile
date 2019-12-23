@@ -120,4 +120,3 @@ COPY init.sh /home/init.sh
 RUN chmod +x /home/init.sh
 
 CMD ["/bin/bash", "-c", "/home/init.sh"]
-
