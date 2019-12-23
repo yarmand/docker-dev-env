@@ -10,6 +10,7 @@ docker run --name samba \
         -v docker-dev-env_home:/home \
         -v docker-dev-env_opt:/opt \
         -v docker-dev-env_src:/src \
+        -v ~/.ssh/id_rsa.pub:/home/id_rsa.pub \
         --rm \
         -d \
         dperson/samba \
