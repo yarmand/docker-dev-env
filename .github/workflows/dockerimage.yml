@@ -1,0 +1,25 @@
+name: Docker Build and Publish
+
+on:
+  push:
+    paths: 
+      - Dockerfile
+
+jobs:
+  docker:
+    env:
+      IMAGE: yarmand/docker-dev-env/latest
+      TAG: latest
+      USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag docker.pkg.github.com/${IMAGE}:${TAG}
+    - name: docker login
+      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+    - name: push image
+      run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
