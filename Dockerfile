@@ -116,12 +116,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# For the ssh connection
-## You need to copy your public key in this folder before starting,
-## you can find it here $HOME/.ssh/id_rsa.pub. th command would be:
-## cp ~/.ssh/id_rsa.pub .
-COPY id_rsa.pub /home/id_rsa.pub
-
 COPY init.sh /home/init.sh
 RUN chmod +x /home/init.sh
 
