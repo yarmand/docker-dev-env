@@ -8,8 +8,8 @@ on:
 jobs:
   docker:
     env:
-      IMAGE: yarmand/docker-dev-env/latest
-      TAG: latest
+      IMAGE: yarmand/docker-dev-env/general
+      TAG: ${{github.sha}}
       USERNAME: ${{ secrets.GITHUB_USERNAME }}
       PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
 
@@ -23,3 +23,7 @@ jobs:
       run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
     - name: push image
       run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
+    - name: tag latest
+      run: docker tag docker.pkg.github.com/${IMAGE}:${TAG} docker.pkg.github.com/${IMAGE}:latest
+    - name: push latest
+      run: docker push docker.pkg.github.com/${IMAGE}:latest
