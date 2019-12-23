@@ -7,6 +7,8 @@ docker volume create docker-dev-env_home
 docker volume create docker-dev-env_opt
 docker volume create docker-dev-env_src
 
+docker pull docker.pkg.github.com/yarmand/docker-dev-env || echo 'cannot pull the image you may want to do: docker login docker.pkg.github.com'
+
 docker rm -f samba
 docker rm -f docker-dev-env
 
@@ -24,8 +26,6 @@ docker run --name samba ^
           -s "OPT;/opt;yes;no" ^
           -s "SRC;/src;yes;no"
 
-REM docker build -t docker-dev-env ..
-
 docker run --rm -it ^
         --name docker-dev-env ^
         -v docker-dev-env_home:/root ^
@@ -36,4 +36,4 @@ docker run --rm -it ^
         -v /var/run/docker.sock:/var/run/docker.sock ^
         -v /usr/local/bin/docker:/usr/local/bin/docker ^
         -p 9022:22 ^
-        docker-dev-env
+        docker.pkg.github.com/yarmand/docker-dev-env
