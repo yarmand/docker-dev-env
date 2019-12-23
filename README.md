@@ -6,13 +6,13 @@ system Windows / osx
 It use named volumes to get persistence between the runs.
 
 ## setup
-Create or put your standard ssh public key in the file `id_rsa.pub`.
+###SSH connection to the container.
+The container will use you `~/.ssh.id_rsa.pub` file into `/root/.ssh/authorized_keys`
 
-This file will be copy as /root/.ssh/authorized_keys to enable you to ssh in the container.
 
 ## goodies
 - mount the host docker socket so you can use docker from inside the container
-- by default it start a container with ssH daemon
+- by default it start a container with ssH daemon on port 9022
      - `ssh -p 9022 root@localhost`
 - `/src` is a persistent volume
 - `/opt` is a persistent volume
@@ -21,6 +21,11 @@ This file will be copy as /root/.ssh/authorized_keys to enable you to ssh in the
   - mount `c:\` in `/mnt/c`
 - on mac
   - mount `/Volumes/Users` in `/mnt/users`
+- persistent volumes are SAMBA exposed on the docker VM IP. They can be mounted with 
+    - /src => \\10.75.0.2\SRC
+    - /root => \\10.75.0.2\HOME
+    - /opt => \\10.75.0.2\OPT
+- 
 
 # run it
 ```
@@ -32,11 +37,20 @@ ssh -p 9022 root@localhost
 ```
 
 ## copy files in the container
+**Using Samba:**
+- /src => \\10.75.0.2\SRC
+- /root => \\10.75.0.2\HOME
+- /opt => \\10.75.0.2\OPT
+
+**user docker:**
 ```
 docker cp my_folder docker-dev-env:/src/my_folder
 ```
 
-## copy files out of hte container
+## copy files out of the container
+**using samba:** (see above)
+
+**user docker**
 ```
 docker cp docker-dev-env:/src/some_place/output.txt output.txt
 ```
@@ -45,6 +59,3 @@ you can export one of the volumes mounted in `/src` `/opt` and `/root` with a co
 ```
 $ docker run --rm --volumes-from docker-dev-env -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /src
 ```
-
-# TODO
-- example on how to export persisten volumes as .tar.gz
