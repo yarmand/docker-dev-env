@@ -1,2 +1,1 @@
-docker kill docker-dev-env
-docker kill samba
+cd .. && docker-compose down

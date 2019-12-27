@@ -1,0 +1,35 @@
+version: "3"
+volumes:
+  home:
+  src:
+  opt:
+
+services:
+  devenv:
+    image: docker.pkg.github.com/yarmand/docker-dev-env/general:latest
+    volumes:
+      - home:/root
+      - src:/src
+      - opt:/opt
+      - /c:/mnt/c
+      - /c/Users/yann/.ssh/id_rsa.pub:/home/id_rsa.pub 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+    ports:
+      - "9022:22"
+
+  samba:
+    image: dperson/samba
+    network_mode: host
+    environment:
+      - USERID=0
+      - GROUPIP=0
+    volumes:
+      - home:/home
+      - opt:/opt
+      - src:/src
+    command: [
+      "-s", "HOME;/home;yes;no",
+      "-s", "OPT;/opt;yes;no",
+      "-s", "SRC;/src;yes;no"
+      ]

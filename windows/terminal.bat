@@ -1,1 +1,1 @@
-docker exec -it  docker-dev-env /usr/bin/zsh
+cd .. && docker-compose exec devenv //usr/bin/zsh
