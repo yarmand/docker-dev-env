@@ -75,8 +75,8 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
 ENV PATH=${PATH}:/usr/local/go/bin
 RUN cd && \
     set -eux; \
-    GO_VERION=1.13.1 ; \
-    REL_SHA=94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124 \
+    GO_VERION=1.13.5 ; \
+    REL_SHA=512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569 \
     PACKAGE=go${GO_VERION}.linux-amd64.tar.gz ; \
     curl -L -O https://dl.google.com/go/${PACKAGE} ; \
     echo "${REL_SHA} ${PACKAGE}" | sha256sum -c - ; \
