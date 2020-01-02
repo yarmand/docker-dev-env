@@ -6,6 +6,7 @@ RUN apt-get update && apt install -y \
         git \
         htop \
         openssh-server \
+        gnupg-agent \
         openvpn \
         tig \
         zsh \
@@ -47,7 +48,7 @@ RUN echo '. /etc/profile' >>/etc/zsh/zprofile
 
 # docker things
 RUN curl -L -o /usr/bin/docker-compose \
-        https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64 && \
+        https://github.com/docker/compose/releases/download/1.25.0/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
       chmod +x ./kubectl && \
@@ -57,6 +58,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s 
 # chruby
 RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz && \
     tar -xzvf chruby-0.3.9.tar.gz && \
+    rm -f chruby-0.3.9.tar.gz.* && \
     cd chruby-0.3.9/ &&\
     sudo make install &&\
     wget -O ruby-install-0.6.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz &&\
@@ -68,7 +70,7 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
 COPY profile.d/ruby.sh /etc/profile.d/ruby.sh
 
 # node 10
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - &&\
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - &&\
     sudo apt-get update && apt-get install -y nodejs
 
 # golang
