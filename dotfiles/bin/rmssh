@@ -1,0 +1,38 @@
+#!/bin/bash
+
+ME=`basename $0`
+REMOTE=megdev
+
+function usage()
+{
+  echo "usage:\n  $ME [bridge_connection_options]"
+  echo "\nexample:\n   $ME -p 3049 yarmand@harakys.cloudapp.net"
+}
+
+if [ "$1" = "-h" ] ; then
+  usage
+  exit 0
+fi
+
+BRIDGE="$*"
+NEED_BRIDGE=true
+
+if [ -z "$BRIDGE" ] ; then
+  BRIDGE="-p 50022 yarmand@maison.harakys.com"
+  NEED_BRIDGE=false
+fi
+
+PORT=$[RANDOM % 100 + 8000]
+
+echo "PORT=$PORT"
+echo "establishing connection from $REMOTE to $BRIDGE"
+~/Dropbox/Projects/fshell/execute.sh $REMOTE ssh -fN -R $PORT:localhost:22 $BRIDGE
+
+if $NEED_BRIDGE ; then
+  echo "establishing connection from localhost to $BRIDGE"
+  ssh -fN -L $PORT:localhsot:$PORT $BRIDGE
+fi
+
+echo "connecting to $REMOTE"
+sleep 3
+ssh -A -D 8033 -p $PORT cloudy@localhost

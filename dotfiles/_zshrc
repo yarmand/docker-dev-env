@@ -1,0 +1,313 @@
+OSX=false
+LINUX=false
+WINDOWS=false
+case `uname -s` in
+  Darwin)
+    OSX=true
+    ;;
+  Linux)
+    LINUX=true
+    ;;
+esac
+if (uname -a | grep Microsoft) ; then
+  WINDOWS=true
+fi
+
+TERM=xterm-256color
+
+
+## ssh and gpg agent
+function start_gpg-agent() {
+  gpg-agent --daemon -q --log-file $HOME/.gpg.log --enable-ssh-support -s 2>&1
+}
+function restart_gpg-agent() {
+  ps ax | grep gpg-agent | awk '{print $1}' | xargs kill -QUIT
+  start_gpg-agent
+}
+export GPG_TTY=$(tty)
+start_gpg-agent
+export SSH_AUTH_SOCK=${HOME}/.gnupg/S.gpg-agent.ssh
+export GPG_AGENT_INFO=${HOME}/.gnupg/S.gpg-agent:0:1
+
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="yann"
+#ZSH_THEME="amuse"
+#ZSH_THEME="alanpeabody"
+
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# Set to this to use case-sensitive completion
+# CASE_SENSITIVE="true"
+
+# Comment this out to disable bi-weekly auto-update checks
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment to change how many often would you like to wait before auto-updates occur? (in days)
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment following line if you want to disable colors in ls
+# DISABLE_LS_COLORS="true"
+
+# Uncomment following line if you want to disable autosetting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment following line if you want red dots to be displayed while waiting for completion
+# COMPLETION_WAITING_DOTS="true"
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(git)
+
+# Path to your oh-my-zsh configuration.
+ZSH=$HOME/.oh-my-zsh
+
+source $ZSH/oh-my-zsh.sh
+
+# Customize to your needs...
+
+# PRETZO
+# https://github.com/sorin-ionescu/prezto
+#source "$HOME/.zprezto/init.zsh"
+#prompt gitclock
+
+VIM=vim
+export EDITOR=${VIM}
+export VISUAL=${VIM}
+
+###########
+# aliases #
+###########
+function v()
+{
+  if [ -f .vimsession ] ; then
+    ${VIM} -S .vimsession $*
+  else
+    ${VIM} $*
+  fi
+}
+function e()
+{
+    if (ps | grep -v grep | grep emacs); then
+	emacsclient -nw $*
+    else
+	emacs -nw $*
+    fi
+}
+# alias e='emacsclient -n'
+$LINUX && alias ls='\ls -F --color=auto'
+$OSX && alias ls='\ls -F -G'
+alias df='df -h'
+alias cp='\cp -i'
+alias mv='\mv -i'
+alias rm='rm -i'
+alias la='\ls -A'
+alias ll='\ls -l'
+alias d='setDisplay'
+alias ldd='otool -L'
+alias xterm='xterm -bg grey -fg black'
+alias top='top -u'
+alias tx='TERM=xterm-256color'
+alias ts='TERM=screen-256color'
+alias wf='cd ~/code/yammer/workfeed/'
+
+alias cctags='ctags --extra=+f -R *'
+
+####################
+# useful functions #
+####################
+# first something to make your dirrectory clean
+clean()
+{
+  find . -name '\#*'  -exec rm -f {} \;
+  find . -name '\.*~'  -exec rm -f {} \;
+  find . -name '*~'  -exec rm -f {} \;
+  find . -name '\.DS_Store'  -exec rm -f {} \;
+  find . -name 'core*'  -exec rm -f {} \;
+  find . -name '\.swp'  -exec rm -f {} \;
+}
+
+##########################
+# Some environ variables #
+##########################
+export PATH=~/bin:/opt/bin:/usr/local/bin:/usr/local/sbin:/usr/X11/bin:$PATH
+export HOSTNAME=`hostname`
+export WHOAMI=`whoami`
+export PAGER=less
+export history_control=ignoredups
+export HISTSIZE=50
+export EDITOR=vim
+#export DISPLAY=:0
+
+################
+# the ls color #
+################
+#          1 2 3 4 5 6 7 8 9 1011
+LSCOLORS='cxfxfxdxbxegedabagacad';
+export LSCOLORS
+
+###########
+# node.js #
+###########
+export NODE_PATH=/usr/local/lib/jsctags:$NODE_PATH:/usr/local/lib/node
+
+######
+# go #
+######
+GOPATH=$HOME/go
+$WINDOWS && export GOPATH="/c/Users/yann/go"
+export PATH=$GOPATH/bin:/c/Go/bin:/usr/local/go/bin:$PATH
+$WINDOWS && alias go=go.exe
+$WINDOWS && alias godoc=godoc.exe
+$WINDOWS && alias gofmt=gofmt.exe
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+export GO111MODULE=on
+
+############
+# workfeed #
+############
+alias wfunic='bundle exec unicorn_rails -l /tmp/workfeed.unicorn.sock -c ~/src/unicorn_config.rb'
+
+#######
+# rvm #
+#######
+# system wide
+#if [ -s /usr/local/rvm/scripts/rvm ] ;then
+  #. /usr/local/rvm/scripts/rvm
+  #PATH=/usr/local/rvm/scripts/rvm:$PATH
+#fi
+# user
+#if [ -s "$HOME/.rvm/scripts/rvm" ] ; then
+  #. "$HOME/.rvm/scripts/rvm" # Load RVM function
+  #PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+#fi
+
+##########
+# chruby #
+##########
+#source /usr/local/share/chruby/chruby.sh
+#chruby 2.4
+
+###########
+# bundler #
+###########
+alias bi="bundle install"
+alias be="bundle exec"
+alias ru="bundle exec ruby"
+alias rails="bundle exec rails"
+alias rake="bundle exec rake"
+alias rspec="bundle exec rspec"
+#alias ca="bundle exec cap"
+#alias cu="bundle exec cucumber"
+
+#######
+# git #
+#######
+function git_current_branch()
+{
+  git rev-parse --abbrev-ref HEAD
+}
+function confirm()
+{
+  cmd=$*
+  echo "you are about to run this command :"
+  echo -n "===> "
+  echo $cmd
+  echo "Do this (y/n)?"
+  read r
+  if [ $r = "y" ] ; then
+    eval $cmd
+  fi
+}
+alias aliases_git="grep '=\"git' ~/.bashrc"
+alias g="git"
+alias gs="git status"
+alias egs="emacs -f magit-status -f other-window -f delete-window"
+alias gb="git branch"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gpl='git pull'
+alias gpush='git push origin `git_current_branch`'
+alias gdiff="git diff"
+
+git_repo_root(){
+  git rev-parse --show-toplevel 2>/dev/null
+}
+
+function ccd(){
+  cd $(git_repo_root)
+}
+
+
+########
+# JAVA #
+########
+JAVA_HOME_CMD=/usr/libexec/java_home
+function chjava(){
+  if [ $# -eq 0 ] ; then
+    $JAVA_HOME_CMD -V
+    return
+  fi
+  export JAVA_HOME=`$JAVA_HOME_CMD -v $*`
+}
+# chjava 1.8
+PATH=/usr/local/apache-maven-3.6.2/bin:$PATH
+
+##################
+# Guardfile hack #
+##################
+
+function guard(){
+  guard_filename="/tmp/`pwd | sed -e 's/ /_/g' -e 's/\//_/g'`_Guardfile"
+  rm -f $guard_filename
+  cat ~/.Guardfile >$guard_filename
+  cat Guardfile >>$guard_filename
+  bundle exec guard -G $guard_filename
+}
+
+alias cubox='ssh -p 9122 yann@maison.harakys.com'
+
+# display tmate connection
+if [[ "$TMUX" =~ tmate ]]  ; then
+  tmate show-message
+fi
+
+
+##########
+# Tokens #
+##########
+if [ -f ~/.tokens ] ; then
+  source ~/.tokens
+fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+$WINDOWS && export DOCKER_HOST=tcp://0.0.0.0:2375
+
+##################
+# JAVA and Maven #
+##################
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JDK_18=/usr/lib/jvm/java-8-openjdk-amd64
+export MVN_VERSION=3.5.4
+export maven=/usr/local/apache-maven-${MVN_VERSION}
+export M2_HOME=/usr/local/apache-maven-${MVN_VERSION}
+export MAVEN_HOME=/usr/local/apache-maven-${MVN_VERSION}
+export PATH=$JABA_HOME/bin:$MAVEN_HOME/bin:$PATH
+
+export PATH=$MAVEN_HOME/bin:$PATH
+
+#########################
+## docker-dev-env utils #
+#########################
+#if [[ -d /mnt/c/docker-dev-env ]] ; then
+  #. /mnt/c/docker-dev-env/aliases.sh
+#fi
+
+

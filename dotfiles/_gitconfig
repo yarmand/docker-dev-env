@@ -1,0 +1,67 @@
+[gui]
+
+[diff]
+  tool = vim
+[difftool "vim"]
+  cmd = "vimdiff \"$LOCAL\" \"$REMOTE\""
+
+[merge]
+
+[guitool "Files/Open"]
+  cmd = mvim $FILENAME
+  noconsole = yes
+
+[user]
+  name = yann ARMAND
+  email = yarmand@yammer-inc.com
+
+[merge]
+  diffstat = false
+
+[core]
+  excludesfile = /Users/yarmand/.gitignore_global
+	trustctime = false
+	fileMode = false
+	autocrlf = input
+	eol = lf
+
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+
+[alias]
+  latest = "! sh -c 'git fetch; git checkout -b temp ; git branch -D $1 ; git checkout $1 ; git branch -D temp' -"
+  co = "checkout"
+  ll = log --graph --max-count=20 --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %C(green)(%an, %cr)%Creset %C(red)%N%Creset'
+  l = log --graph --pretty=format:'%C(yellow)%H%Creset -%C(red)%d%Creset %s %C(green)(%an, %cr)%Creset %C(red)%N%Creset'
+  lm = log --author yann --graph --pretty=format:'%C(yellow)%H%Creset -%C(red)%d%Creset %s %C(green)(%an, %cr)%Creset %C(red)%N%Creset'
+  s = show
+  ss = status
+  tcp = notes add -m 'TO CHERRY-PICK' HEAD
+  tinablast = "! sh -c 'git branch -D thunderdome ; git checkout -b thunderdome ; git push origin :thunderdome ; git push origin thunderdome'"
+  find-pr = "! sh -c 'git log $1..master --ancestry-path --merges --oneline | tail -n1 ' -"
+  bclean = "!f() { branches=$(git branch --merged ${1-master} | grep -v " ${1-master}$"); [ -z \"$branches\" ] || git branch -d $branches; }; f"
+  pr = pull-request
+  chmod = update-index --chmod=+x
+
+[color]
+  ui = auto
+[github]
+	user = yarmand
+
+[tig "bind"]
+  status = Z !git checkout %(file)
+  status = D !rm -i %(file)
+
+[push]
+	default = current
+[hub]
+	host = github.int.tyammer.com
+	host = github.int.yammer.com
+[rerere]
+	enabled = 1
+

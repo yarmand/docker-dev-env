@@ -16,6 +16,8 @@ chmod 644 /root/.ssh/authorized_keys
 # put back in place azure-cli
 rm -rf /opt/az && mv /usr/local/az /opt
 
+/home/shared/dotfiles/setup.sh
+
 while true ; do
   sleep 10000
 done

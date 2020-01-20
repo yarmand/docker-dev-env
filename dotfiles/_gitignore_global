@@ -1,0 +1,12 @@
+*~
+.DS_Store
+.tags*
+*.swp
+*.swo
+tags
+NERD_tree_1
+/Users/yarmand/yammer/workfeed/public/favicon.ico
+tesh.cmd
+tesh_default_commands.rb
+config/database.horiz.yml
+config/database.master.yml

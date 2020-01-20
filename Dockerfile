@@ -118,6 +118,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+ADD dotfiles /home/shared/dotfiles
+
 COPY init.sh /home/init.sh
 RUN chmod +x /home/init.sh
 

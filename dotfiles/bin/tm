@@ -1,0 +1,95 @@
+#!/bin/bash
+
+VERBOSE=0
+TMUX_CONFIG_OPTS='-2'
+
+function show_help()
+{
+  echo "Usage: $0 [-v] [-f config_file] [-S soket] [-n name] [-share] [-- tmux options]"
+  echo "   -v             : verbose"
+  echo "   -n name        : name for the session"
+  echo "   -l             : list existing sessions"
+  echo "   -share         : share local session using tmate and diplay connection string"
+  echo " with no option, tm will create/join a session with the current folder name"
+}
+
+function debug()
+{
+  if [ $VERBOSE -eq 1 ] ; then
+    echo $*
+  fi
+}
+
+SHARE=0
+SESSION_NAME=''
+
+TMUX_CMD='attach'
+
+while [[ $1 == -* ]]; do
+  case "$1" in
+    -h | --help)
+      show_help
+      exit 0
+      ;;
+    -v|--verbose)
+      VERBOSE=1
+      shift
+      ;;
+    -n)
+      if (($# > 1)); then
+        SESSION_NAME=$2; shift 2
+      else
+        echo "-n requires a name" 1>&2
+        show_help
+        exit 1
+      fi ;;
+    --)
+      shift
+      TMUX_INLINE_OPTS=$#
+      break
+      ;;
+    -share)
+      shift
+      SHARE=1
+      ;;
+    -l)
+      shift
+      TMUX_CMD=list-sessions
+      ;;
+    -*)
+      echo "invalid option: $1" 1>&2
+      show_help
+      exit 1
+      ;;
+    *)
+      show_help
+      exit 0
+      ;;
+  esac
+done
+
+if [ "$SESSION_NAME" = '' ] ; then
+  h=`pwd`
+  SESSION_NAME=`basename $h`
+fi
+
+
+TMUX_OPTS="$TMUX_CONFIG_OPTS $TMUX_INLINE_OPTS"
+
+debug "TMUX_OPTS=$TMUX_OPTS"
+
+if [ $SHARE -eq 1 ] ; then
+  TMUX="tmate"
+  SESSION_NAME="<->$SESSION_NAME"
+else
+  TMUX="tmux"
+fi
+
+if [ $TMUX_CMD = 'list-sessions' ] ; then
+  $TMUX $TMUX_CMD
+  exit 0
+fi
+
+$TMUX list-sessions | grep $SESSION_NAME && TMUX_CMD="attach -t" || TMUX_CMD="new-session -s"
+$TMUX $TMUX_OPTS $TMUX_CMD $SESSION_NAME
+

@@ -1,0 +1,60 @@
+{
+	"name": "docker-dev-env",
+	"dockerFile": "Dockerfile",
+	// Specifies a list of ports the container should publish
+	"appPort": [
+		9000,
+	],
+	"runArgs": [
+		// Uncomment the next line to run as root instead. Linux users, 
+		// update Dockerfile with your user's UID/GID if not 1000 when
+		// using the default "vscode" user.
+		// "-u", "vscode",
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"-v", "${env:HOME}${env:USERPROFILE}/.ssh:/home/vscode/.ssh:ro"
+  ],
+  "mounts": [
+    "source=docker-dev-env_home,target=/home/user,type=volume",
+    "source=docker-dev-env_src,target=/src,type=volume",
+    "source=docker-dev-env_opt,target=/opt,type=volume",
+    "source=/var/run/docker.sock/,target=//var/run/docker.sock,type=bind",
+    "source=/usr/local/bin/docker,target=/usr/local/bin/docker,type=bind",
+  ],
+	// Use 'settings' to set *default* container specific settings.json values on container create. 
+	// You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": {
+		"terminal.integrated.shell.linux": "/usr/bin/zsh",
+		"go.gopath": "/go",
+		"go.useLanguageServer": true,
+		"gopls": {
+			"usePlaceholders": true, // add parameter placeholders when completing a function
+			// Experimental settings
+			"completeUnimported": true, // autocomplete unimported packages
+			"deepCompletion": true // enable deep completion
+		},
+		"go.formatTool": "goimports",
+		"[go]": {
+			"editor.snippetSuggestions": "none",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": true
+			}
+		},
+		"go.languageServerFlags": [
+			"-rpc.trace", // for more detailed debug logging
+			"-logfile",
+			"/tmp/gopls.log",
+			"serve",
+			"--debug",
+			"localhost:8080" // to investigate memory usage, see profiles
+		],
+		"files.eol": "\n" // formatting only supports LF line endings
+	},
+	// Uncomment the next line to run commands after the container is created.
+	"postCreateCommand": "/home/shared/dotfiles/setup.sh",
+	"extensions": [
+		"ms-vscode.go"
+	]
+}
