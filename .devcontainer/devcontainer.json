@@ -13,12 +13,11 @@
 		"--cap-add=SYS_PTRACE",
 		"--security-opt",
 		"seccomp=unconfined",
-		"-v", "${env:HOME}${env:USERPROFILE}/.ssh:/home/vscode/.ssh:ro"
   ],
   "mounts": [
-    "source=docker-dev-env_home,target=/home/user,type=volume",
+    "source=docker-dev-env_home,target=/root,type=volume",
     "source=docker-dev-env_src,target=/src,type=volume",
-    "source=docker-dev-env_opt,target=/opt,type=volume",
+		"source=docker-dev-env_opt,target=/opt,type=volume",
     "source=/var/run/docker.sock/,target=//var/run/docker.sock,type=bind",
     "source=/usr/local/bin/docker,target=/usr/local/bin/docker,type=bind",
   ],
@@ -53,7 +52,7 @@
 		"files.eol": "\n" // formatting only supports LF line endings
 	},
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "/home/shared/dotfiles/setup.sh",
+	 "postCreateCommand": "rm -rf /root/.vscode-server",
 	"extensions": [
 		"ms-vscode.go"
 	]

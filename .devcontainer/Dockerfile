@@ -1,2 +1,1 @@
-FROM docker.pkg.github.com/yarmand/docker-dev-env/general:latest
-
+FROM docker.pkg.github.com/yarmand/docker-dev-env/go:latest

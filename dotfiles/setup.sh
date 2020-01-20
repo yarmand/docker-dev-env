@@ -9,8 +9,7 @@ if [ ! -d ~/bin ] ; then
 fi
 
 if [ ! -d ~/.oh-my-zsh ] ; then
-  cd $HERE/.. && cd .oh-my-zsh && git pull || git clone --recursive https://github.com/robbyrussell/oh-my-zsh.git ".oh-my-zsh"
-  cd && ln -sf $HERE/../.oh-my-zsh
+  cd && git clone --recursive https://github.com/robbyrussell/oh-my-zsh.git ".oh-my-zsh"
   cd && ln -sf $HERE/yann.zsh-theme .oh-my-zsh/themes/
 fi
 
