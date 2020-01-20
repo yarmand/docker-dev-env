@@ -119,6 +119,7 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD dotfiles /home/shared/dotfiles
+RUN chmod +x /home/shared/dotfiles/setup.sh
 
 COPY init.sh /home/init.sh
 RUN chmod +x /home/init.sh
