@@ -1,4 +1,12 @@
-FROM ubuntu:18.04
+##########
+## BASE ##
+##########
+FROM ubuntu:18.04 as base
+
+RUN apt-get update && apt-get install -y \
+      software-properties-common
+RUN add-apt-repository ppa:rmescandon/yq 
+RUN add-apt-repository ppa:jonathonf/vim
 
 RUN apt-get update && apt install -y \
         build-essential \
@@ -19,22 +27,11 @@ RUN apt-get update && apt install -y \
         net-tools \
         host \
         unzip \
-        vim \
         jq \
+        yq \
         sshuttle \
-        man
-
-# vim8 and neovim
-RUN apt-get update && apt-get install -y \
-      software-properties-common
-RUN add-apt-repository ppa:jonathonf/vim
-RUN add-apt-repository ppa:neovim-ppa/stable
-RUN apt-get install -y \
-      vim \
-      neovim
-
-# curl
-RUN apt install -y \
+        vim \
+        man \
         libyaml-0-2 \
         zlib1g \
         zlib1g-dev \
@@ -46,16 +43,47 @@ RUN apt install -y \
 RUN chsh -s /usr/bin/zsh
 RUN echo '. /etc/profile' >>/etc/zsh/zprofile
 
-# docker things
+# docker tools
+## docker-compose
 RUN curl -L -o /usr/bin/docker-compose \
         https://github.com/docker/compose/releases/download/1.25.0/docker-compose-Linux-x86_64 && \
         chmod +x /usr/bin/docker-compose
+## kubectl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
       chmod +x ./kubectl && \
       mv ./kubectl /usr/local/bin/kubectl
 
+# azure-cli
+RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
+    (AZ_REPO=$(lsb_release -cs) ; echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main") | \
+    tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
+     --keyserver packages.microsoft.com \
+     --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
+    apt-get update && \
+    apt-get install azure-cli && \
+    mv /opt/az /usr/local/az
+    # We move azure-cli /opt/az into /usl/local as /opt will be a persistent volume
 
-# chruby
+# local timezone
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
+ENV TZ=America/Los_Angeles
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+ADD dotfiles /home/shared/dotfiles
+RUN chmod +x /home/shared/dotfiles/setup.sh
+
+COPY init.sh /home/init.sh
+RUN chmod +x /home/init.sh
+
+ENTRYPOINT ["/bin/bash", "-c", "/home/init.sh"]
+CMD ["/bin/bash", "-c", "while true ; do sleep 10000 ; done"]
+
+############
+## CHRUBY ##
+############
+# each ruby you want ot use will have to be build using ruby-install and will persist in /opt 
+FROM base as ruby
 RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz && \
     tar -xzvf chruby-0.3.9.tar.gz && \
     rm -f chruby-0.3.9.tar.gz.* && \
@@ -69,11 +97,17 @@ RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archi
     # rubies will install in /opt which is a persistent volume
 COPY profile.d/ruby.sh /etc/profile.d/ruby.sh
 
-# node 10
+############
+## NODEJS ##
+############
+FROM base as nodejs
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - &&\
     sudo apt-get update && apt-get install -y nodejs
 
-# golang
+########
+## GO ##
+########
+FROM base as go
 ENV PATH=${PATH}:/usr/local/go/bin
 RUN cd && \
     set -eux; \
@@ -86,8 +120,11 @@ RUN cd && \
     rm  -f ${PACKAGE}
 ENV GO111MODULE=on
 
-# Java
+##########
+## JAVA ##
+##########
 ## openJDK 8
+FROM base as java
 RUN apt-get update && sudo apt-get install -y openjdk-8-jdk
 ## maven
 # Install Maven
@@ -100,28 +137,3 @@ ENV JDK_18=/usr/lib/jvm/java-8-openjdk-amd64
 ENV maven=/usr/local/apache-maven-${MVN_VERSION}
 ENV M2_HOME=/usr/local/apache-maven-${MVN_VERSION}
 ENV MAVEN_HOME=/usr/local/apache-maven-${MVN_VERSION}
-
-# azure-cli
-RUN apt-get install apt-transport-https lsb-release software-properties-common dirmngr -y &&\
-    (AZ_REPO=$(lsb_release -cs) ; echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main") | \
-    tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
-     --keyserver packages.microsoft.com \
-     --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
-    apt-get update && \
-    apt-get install azure-cli && \
-    mv /opt/az /usr/local/az
-    # move azure-cli /opt/az into /usl/local as my docker-compose use a persisted /opt
-
-# local timezone
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
-ENV TZ=America/Los_Angeles
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-ADD dotfiles /home/shared/dotfiles
-RUN chmod +x /home/shared/dotfiles/setup.sh
-
-COPY init.sh /home/init.sh
-RUN chmod +x /home/init.sh
-
-CMD ["/bin/bash", "-c", "/home/init.sh"]

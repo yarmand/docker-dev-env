@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  devenv:
+    volumes:
+      - home:/root
+      - src:/src
+      - opt:/opt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+      - /c:/mnt/c
+      - /c/Users/${USERNAME}/.ssh:/root/.ssh
+    ports:
+      - "9022:22"

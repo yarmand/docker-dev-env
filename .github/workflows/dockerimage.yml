@@ -6,19 +6,20 @@ on:
       - Dockerfile
 
 jobs:
-  docker:
+  build-docker-images:
+    strategy:
+      matrix:
+        target: [base, ruby, nodejs, go, java]
     env:
-      IMAGE: yarmand/docker-dev-env/general
+      IMAGE: yarmand/docker-dev-env/${{ matrix.target }}
       TAG: ${{github.sha}}
       USERNAME: ${{ secrets.GITHUB_USERNAME }}
       PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker.pkg.github.com/${IMAGE}:${TAG}
+      run: docker build . --file Dockerfile --target ${{ matrix.target }} --tag docker.pkg.github.com/${IMAGE}:${TAG}
     - name: docker login
       run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
     - name: push image
@@ -30,3 +31,4 @@ jobs:
     - name: docker logout
       run: docker logout docker.pkg.github.com
       if: always()
+  

@@ -11,8 +11,6 @@ services:
       - home:/root
       - src:/src
       - opt:/opt
-      - /c:/mnt/c
-      - /c/Users/yann/.ssh/id_rsa.pub:/home/id_rsa.pub 
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/local/bin/docker:/usr/local/bin/docker
     ports:

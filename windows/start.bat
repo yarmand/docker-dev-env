@@ -7,6 +7,6 @@ set IMAGE=docker.pkg.github.com/yarmand/docker-dev-env/general:latest
 docker pull %IMAGE% || echo 'cannot pull the image you may want to do: docker login docker.pkg.github.com'
 
 cd ..
-docker-compose down
-docker-compose up
+docker-compose  down
+docker-compose -f docker-compose.yaml -f windows/docker-compose.yaml up
 
