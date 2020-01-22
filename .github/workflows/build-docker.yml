@@ -30,6 +30,7 @@ jobs:
       if: always()
   
   build-languages-images:
+    needs: build-base-image
     strategy:
       matrix:
         target: [ruby, nodejs, go, java]
