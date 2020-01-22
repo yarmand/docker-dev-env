@@ -6,7 +6,7 @@ volumes:
 
 services:
   devenv:
-    image: docker.pkg.github.com/yarmand/docker-dev-env/general:latest
+    image: docker.pkg.github.com/yarmand/docker-dev-env/base:latest
     volumes:
       - home:/root
       - src:/src
