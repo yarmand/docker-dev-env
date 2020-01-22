@@ -6,10 +6,33 @@ on:
       - Dockerfile
 
 jobs:
-  build-docker-images:
+  build-base-image:
+    env:
+      IMAGE: yarmand/docker-dev-env/base
+      TAG: ${{github.sha}}
+      USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --target base --tag docker.pkg.github.com/${IMAGE}:${TAG}
+    - name: docker login
+      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+    - name: push image
+      run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
+    - name: tag latest
+      run: docker tag docker.pkg.github.com/${IMAGE}:${TAG} docker.pkg.github.com/${IMAGE}:latest
+    - name: push latest
+      run: docker push docker.pkg.github.com/${IMAGE}:latest
+    - name: docker logout
+      run: docker logout docker.pkg.github.com
+      if: always()
+  
+  build-languages-images:
     strategy:
       matrix:
-        target: [base, ruby, nodejs, go, java]
+        target: [ruby, nodejs, go, java]
     env:
       IMAGE: yarmand/docker-dev-env/${{ matrix.target }}
       TAG: ${{github.sha}}
@@ -18,10 +41,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --target ${{ matrix.target }} --tag docker.pkg.github.com/${IMAGE}:${TAG}
     - name: docker login
       run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+    - name: pull base image
+      run: docker pull docker.pkg.github.com/yarmand/docker-dev-env/base:latest
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --target ${{ matrix.target }} --tag docker.pkg.github.com/${IMAGE}:${TAG}
     - name: push image
       run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
     - name: tag latest
