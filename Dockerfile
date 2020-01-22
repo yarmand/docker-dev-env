@@ -83,7 +83,7 @@ CMD ["/bin/bash", "-c", "while true ; do sleep 10000 ; done"]
 ## CHRUBY ##
 ############
 # each ruby you want ot use will have to be build using ruby-install and will persist in /opt 
-FROM docker.pkg.github.com/yarmand/docker-dev-env/base:latest as ruby
+FROM base as ruby
 RUN cd && wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz && \
     tar -xzvf chruby-0.3.9.tar.gz && \
     rm -f chruby-0.3.9.tar.gz.* && \
@@ -100,14 +100,14 @@ COPY profile.d/ruby.sh /etc/profile.d/ruby.sh
 ############
 ## NODEJS ##
 ############
-FROM docker.pkg.github.com/yarmand/docker-dev-env/base:latest as nodejs
+FROM base as nodejs
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - &&\
     sudo apt-get update && apt-get install -y nodejs
 
 ########
 ## GO ##
 ########
-FROM docker.pkg.github.com/yarmand/docker-dev-env/base:latest as go
+FROM base as go
 ENV PATH=${PATH}:/usr/local/go/bin
 RUN cd && \
     set -eux; \
@@ -124,7 +124,7 @@ ENV GO111MODULE=on
 ## JAVA ##
 ##########
 ## openJDK 8
-FROM docker.pkg.github.com/yarmand/docker-dev-env/base:latest as java
+FROM base as java
 RUN apt-get update && sudo apt-get install -y openjdk-8-jdk
 ## maven
 # Install Maven

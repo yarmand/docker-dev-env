@@ -20,7 +20,7 @@ jobs:
     - name: pull base image
       run: docker pull docker.pkg.github.com/yarmand/docker-dev-env/base:latest
     - name: Build the Docker image
-      run: docker build . --cache-from docker.pkg.github.com/yarmand/docker-dev-env/base:latest --file Dockerfile --tag docker.pkg.github.com/${IMAGE}:${TAG}
+      run: docker build . --cache-from docker.pkg.github.com/yarmand/docker-dev-env/base:latest --file Dockerfile --target base --tag docker.pkg.github.com/${IMAGE}:${TAG}
     - name: push image
       run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
     - name: tag latest
@@ -49,7 +49,7 @@ jobs:
     - name: pull base image
       run: docker pull docker.pkg.github.com/yarmand/docker-dev-env/base:latest
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --target ${{ matrix.target }} --tag docker.pkg.github.com/${IMAGE}:${TAG}
+      run: docker build . --cache-from docker.pkg.github.com/yarmand/docker-dev-env/base:latest --file Dockerfile --target ${{ matrix.target }} --tag docker.pkg.github.com/${IMAGE}:${TAG}
     - name: push image
       run: docker push docker.pkg.github.com/${IMAGE}:${TAG}
     - name: tag latest
