@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: docker login
-      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+      run: docker login -u ${USERNAME} -p ${PASSWORD}
     - name: pull base image
       run: docker pull ${IMAGE}:base-latest
     - name: build image ${TARGET}-latest
@@ -46,7 +46,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: docker login
-      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+      run: docker login -u ${USERNAME} -p ${PASSWORD}
     - name: pull base image
       run: docker pull ${IMAGE}:base-latest
     - name: build image ${TARGET}-latest
@@ -70,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: docker login
-        run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+        run: docker login -u ${USERNAME} -p ${PASSWORD}
       - name: pull base image
         run: docker pull ${IMAGE}:base-latest
       - name: build image ${TARGET}-latest

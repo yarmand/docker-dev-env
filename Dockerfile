@@ -133,4 +133,3 @@ ENV JDK_18=/usr/lib/jvm/java-8-openjdk-amd64
 ENV maven=/usr/local/apache-maven-${MVN_VERSION}
 ENV M2_HOME=/usr/local/apache-maven-${MVN_VERSION}
 ENV MAVEN_HOME=/usr/local/apache-maven-${MVN_VERSION}
-
