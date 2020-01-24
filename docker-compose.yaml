@@ -6,7 +6,7 @@ volumes:
 
 services:
   devenv:
-    image: yarmand/docker-dev-env:latest
+    image: yarmand/docker-dev-env:general-latest
     volumes:
       - home:/root
       - src:/src

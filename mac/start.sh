@@ -1,12 +1,14 @@
 #!/bin/bash
 
+HERE=$(cd $(dirname $0) ; pwd)
+
 # Wait for docker to start
  while ! docker ps ; do sleep 3 ; done
 
-IMAGE=docker.pkg.github.com/yarmand/docker-dev-env/general:latest
-docker pull $IMAGE || echo 'cannot pull the image you may want to do: docker login docker.pkg.github.com'
+IMAGE=yarmand/docker-dev-env:general-latest
+docker pull $IMAGE
 
-cd ..
+cd $HERE/..
 docker-compose down
-docker-compose up
+docker-compose -f docker-compose.yaml -f mac/docker-compose.yaml up
 
