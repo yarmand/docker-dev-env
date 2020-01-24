@@ -1,0 +1,88 @@
+name: Docker Build and Publish
+
+env:
+  IMAGE: yarmand/docker-dev-env
+  GIT_SHA: ${{github.sha}}
+  USERNAME: yarmand
+  PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
+on:
+  push:
+    paths: 
+      - Dockerfile
+
+jobs:
+  build-base-image:
+    env:
+      TARGET: base
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: docker login
+      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+    - name: pull base image
+      run: docker pull ${IMAGE}:base-latest
+    - name: build image ${TARGET}-latest
+      run: docker build . --cache-from ${IMAGE}:base-latest --file Dockerfile --target ${TARGET} --tag ${IMAGE}:${TARGET}-latest
+      if: always()
+    - name: tag image ${TARGET}-${GIT_SHA}
+      run: docker tag ${IMAGE}:${TARGET}-latest ${IMAGE}:${TARGET}-${GIT_SHA}
+    - name: push image ${TARGET}-latest
+      run: docker push ${IMAGE}:${TARGET}-latest
+    - name: push image ${TARGET}-sha
+      run: docker push ${IMAGE}:${TARGET}-${GIT_SHA}
+    - name: docker logout
+      run: docker logout
+      if: always()
+      
+  build-languages-images:
+    needs: build-base-image
+    strategy:
+      matrix:
+        target: [ruby, nodejs, go, java]
+    env:
+      TARGET: ${{matrix.target}}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: docker login
+      run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+    - name: pull base image
+      run: docker pull ${IMAGE}:base-latest
+    - name: build image ${TARGET}-latest
+      run: docker build . --cache-from ${IMAGE}:base-latest --file Dockerfile --target ${TARGET} --tag ${IMAGE}:${TARGET}-latest
+      if: always()
+    - name: tag image ${TARGET}-${GIT_SHA}
+      run: docker tag ${IMAGE}:${TARGET}-latest ${IMAGE}:${TARGET}-${GIT_SHA}
+    - name: push image ${TARGET}-latest
+      run: docker push ${IMAGE}:${TARGET}-latest
+    - name: push image ${TARGET}-sha
+      run: docker push ${IMAGE}:${TARGET}-${GIT_SHA}
+    - name: docker logout
+      run: docker logout
+      if: always()
+    
+  build-general:
+    needs: build-base-image
+    env:
+      TARGET: general
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: docker login
+        run: docker login -u ${USERNAME} -p ${PASSWORD} docker.pkg.github.com
+      - name: pull base image
+        run: docker pull ${IMAGE}:base-latest
+      - name: build image ${TARGET}-latest
+        run: docker build . --cache-from ${IMAGE}:base-latest --file Dockerfile --tag ${IMAGE}:${TARGET}-latest
+        if: always()
+      - name: tag image ${TARGET}-${GIT_SHA}
+        run: docker tag ${IMAGE}:${TARGET}-latest ${IMAGE}:${TARGET}-${GIT_SHA}
+      - name: push image ${TARGET}-latest
+        run: docker push ${IMAGE}:${TARGET}-latest
+      - name: push image ${TARGET}-sha
+        run: docker push ${IMAGE}:${TARGET}-${GIT_SHA}
+      - name: docker logout
+        run: docker logout
+        if: always()
+  
