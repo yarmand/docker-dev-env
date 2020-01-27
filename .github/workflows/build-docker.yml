@@ -73,6 +73,8 @@ jobs:
         run: docker login -u ${USERNAME} -p ${PASSWORD}
       - name: pull base image
         run: docker pull ${IMAGE}:base-latest
+      - name: patch Dockerfile
+        run: sed -i 's/FROM base/#FROM base/g' Dockerfile        
       - name: build image ${TARGET}-latest
         run: docker build . --cache-from ${IMAGE}:base-latest --file Dockerfile --tag ${IMAGE}:${TARGET}-latest
         if: always()
