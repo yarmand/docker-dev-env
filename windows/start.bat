@@ -3,7 +3,7 @@ REM wait for docker to start
 :repeat
 docker ps || sleep 3 && goto repeat
 
-set IMAGE=yarmand/docker-dev-env:latest
+set IMAGE=yarmand/docker-dev-env:general-latest
 docker pull %IMAGE% 
 cd ..
 docker-compose  down
