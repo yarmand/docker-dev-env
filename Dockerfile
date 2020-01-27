@@ -140,8 +140,18 @@ RUN mkdir -p /tmp/gotools \
         github.com/mgechev/revive@latest  \
         github.com/golang/protobuf/protoc-gen-go@latest \
         google.golang.org/grpc@latest \
-        github.com/go-delve/delve/cmd/dlv@latest \
-	2>&1
+        github.com/go-delve/delve/cmd/dlv@latest 2>&1 \
+    # Install Go tools w/o module support
+    && go get -v github.com/alecthomas/gometalinter 2>&1 \
+    #
+    # Install gocode-gomod
+    && go get -x -d github.com/stamblerre/gocode 2>&1 \
+    && go build -o gocode-gomod github.com/stamblerre/gocode \
+    && mv gocode-gomod $GOPATH/bin/ \
+    #
+    # Install golangci-lint
+    && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin 2>&1 \
+    && rm -rf /go/src /tmp/gotools
 
 ##########
 ## JAVA ##
